@@ -1,0 +1,22 @@
+name: Maven Build
+on:
+  push:
+    branches:
+      - main
+jobs:
+  build:
+    name: "Maven Build"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Sources"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - name: "Setup JDK"
+        uses: actions/setup-java@v4
+        with:
+          distribution: "oracle"
+          java-version: 23
+          cache: "maven"
+      - name: "Build with Maven"
+        run: ./mvnw verify
