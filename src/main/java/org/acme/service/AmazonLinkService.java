@@ -33,13 +33,6 @@ public class AmazonLinkService {
         this.affiliateService = affiliateService;
     }
 
-    /**
-     * Processes an Amazon URL to extract ASIN and generate affiliate link. Handles both regular
-     * Amazon URLs and a.co short links.
-     *
-     * @param url The URL to process
-     * @return ProcessedLink with results
-     */
     public ProcessedLink processAmazonUrl(String url) {
         if (url == null || url.isEmpty()) {
             return ProcessedLink.failed(url, LinkType.UNKNOWN);
@@ -49,14 +42,11 @@ public class AmazonLinkService {
 
         LinkType linkType = detectLinkType(url);
 
-        switch (linkType) {
-            case AMAZON_STANDARD:
-                return processStandardAmazonUrl(url);
-            case AMAZON_SHORT:
-                return processShortAmazonUrl(url);
-            default:
-                return ProcessedLink.failed(url, linkType);
-        }
+        return switch (linkType) {
+            case AMAZON_STANDARD -> processStandardAmazonUrl(url);
+            case AMAZON_SHORT -> processShortAmazonUrl(url);
+            default -> ProcessedLink.failed(url, linkType);
+        };
     }
 
     /** Detects the type of Amazon link. */

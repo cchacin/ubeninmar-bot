@@ -9,7 +9,7 @@ COPY pom.xml .
 COPY src ./src
 
 # Build the application with shaded JAR
-RUN mvn clean package -Dshade -DskipTests
+RUN mvn clean spotless:apply package -Dshade -DskipTests
 
 # Runtime stage with minimal JRE
 FROM eclipse-temurin:21-jre

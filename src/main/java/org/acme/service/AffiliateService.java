@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 public class AffiliateService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AffiliateService.class);
-    private static final String DEFAULT_AFFILIATE_TAG = "ubeferrer-20";
+    private static final String DEFAULT_AFFILIATE_TAG = System.getenv("AFFILIATE_TAG");
 
     /**
      * Adds affiliate tag to an Amazon URL. Handles both URLs with existing query parameters and
