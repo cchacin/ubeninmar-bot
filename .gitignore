@@ -115,3 +115,5 @@ release.properties
 
 *.jqwik-database
 dependency-reduced-pom.xml
+
+.env

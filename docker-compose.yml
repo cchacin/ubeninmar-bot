@@ -1,0 +1,30 @@
+services:
+  ubeninmar-bot:
+    build: .
+    container_name: ubeninmar-telegram-bot
+    environment:
+      # Telegram Bot Token - Set this in your .env file or export before running
+      - BOT_TOKEN=${BOT_TOKEN}
+    volumes:
+      # Optional: Mount logs directory if you want to persist logs
+      - ./logs:/app/logs
+    restart: unless-stopped
+    # Resource limits for low-volume usage
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    # Health check
+    healthcheck:
+      test: [ "CMD", "pgrep", "-f", "java.*app.jar" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"

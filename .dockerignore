@@ -1,0 +1,18 @@
+# Docker ignore file
+target/
+.git
+.gitignore
+README.md
+.env
+.env.example
+logs/
+*.log
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
