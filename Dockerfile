@@ -11,7 +11,7 @@ COPY mvnw .
 COPY .mvn ./.mvn
 
 # Build the application with shaded JAR
-#RUN ./mvnw clean spotless:apply package -Dshade -DskipTests
+RUN mvn clean spotless:apply package -Dshade -DskipTests
 
 # Create non-root user for security
 #RUN groupadd -r botuser && useradd -r -g botuser botuser
@@ -30,4 +30,4 @@ COPY .mvn ./.mvn
 #  CMD pgrep -f "java.*app.jar" || exit 1
 
 # Run the application
-#ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
