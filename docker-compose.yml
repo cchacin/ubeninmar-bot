@@ -8,6 +8,5 @@ services:
       - BOT_TOKEN=${BOT_TOKEN}
       - AFFILIATE_TAG=${AFFILIATE_TAG}
     restart: unless-stopped
-    cap_add:
-      - NET_ADMIN
-    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
