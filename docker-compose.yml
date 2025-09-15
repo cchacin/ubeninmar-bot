@@ -10,3 +10,4 @@ services:
     restart: unless-stopped
     cap_add:
       - NET_ADMIN
+    network_mode: host
