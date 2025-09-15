@@ -8,7 +8,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 COPY mvnw .
-COPY .mvn .
+COPY .mvn ./.mvn
 
 # Build the application with shaded JAR
 RUN ./mvnw clean spotless:apply package -Dshade -DskipTests
