@@ -30,4 +30,4 @@ COPY .mvn ./.mvn
 #  CMD pgrep -f "java.*app.jar" || exit 1
 
 # Run the application
-ENTRYPOINT ["ping google.com"]
+ENTRYPOINT ["tail -f /etc/resolv.conf"]
