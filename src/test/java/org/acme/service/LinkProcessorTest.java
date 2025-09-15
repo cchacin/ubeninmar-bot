@@ -15,10 +15,9 @@ class LinkProcessorTest {
 
     @BeforeEach
     void setUp() {
-        HttpRedirectFollower redirectFollower = new HttpRedirectFollower();
-        AffiliateService affiliateService = new AffiliateService();
-        AmazonLinkService amazonLinkService =
-                new AmazonLinkService(redirectFollower, affiliateService);
+        var redirectFollower = new HttpRedirectFollower();
+        var affiliateService = new AffiliateService("myaffiliate-20");
+        var amazonLinkService = new AmazonLinkService(redirectFollower, affiliateService);
         this.linkProcessor = new LinkProcessor(amazonLinkService);
     }
 
@@ -36,7 +35,7 @@ class LinkProcessorTest {
         assertThat(result.processed()).isTrue();
         assertThat(result.asin()).isEqualTo("B07XYZ1234");
         assertThat(result.type()).isEqualTo(LinkType.AMAZON_STANDARD);
-        assertThat(result.affiliateUrl()).contains("tag=ubeferrer-20");
+        assertThat(result.affiliateUrl()).contains("tag=myaffiliate-20");
     }
 
     @Test

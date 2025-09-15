@@ -8,7 +8,16 @@ import org.slf4j.LoggerFactory;
 public class AffiliateService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AffiliateService.class);
-    private static final String DEFAULT_AFFILIATE_TAG = System.getenv("AFFILIATE_TAG");
+
+    private final String affiliateTag;
+
+    public AffiliateService() {
+        this(System.getenv("AFFILIATE_TAG"));
+    }
+
+    public AffiliateService(String affiliateTag) {
+        this.affiliateTag = affiliateTag;
+    }
 
     /**
      * Adds affiliate tag to an Amazon URL. Handles both URLs with existing query parameters and
@@ -36,7 +45,7 @@ public class AffiliateService {
                     cleanUrl
                             + separator
                             + "tag="
-                            + URLEncoder.encode(DEFAULT_AFFILIATE_TAG, StandardCharsets.UTF_8);
+                            + URLEncoder.encode(affiliateTag, StandardCharsets.UTF_8);
 
             LOGGER.debug("Added affiliate tag to URL: {} -> {}", amazonUrl, affiliateUrl);
             return affiliateUrl;
@@ -57,14 +66,5 @@ public class AffiliateService {
         return url.replaceAll("[?&]tag=[^&]*", "")
                 .replaceAll("&+", "&") // Remove multiple consecutive &
                 .replaceAll("[?&]$", ""); // Remove trailing ? or &
-    }
-
-    /**
-     * Gets the current affiliate tag. In the future, this could be user-specific or configurable.
-     *
-     * @return The affiliate tag to use
-     */
-    public String getAffiliateTag() {
-        return DEFAULT_AFFILIATE_TAG;
     }
 }
