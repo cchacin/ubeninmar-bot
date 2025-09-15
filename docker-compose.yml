@@ -12,4 +12,4 @@ services:
       - 127.0.0.1
       - 127.0.1.1
       - 192.168.0.2
-    network_mode: host
+    network_mode: bridge
