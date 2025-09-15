@@ -97,7 +97,7 @@ local.properties
 
 # sbteclipse plugin
 .target
-!.target/*.jar
+!target/*.jar
 
 # TeXlipse plugin
 .texlipse
