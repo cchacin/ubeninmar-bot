@@ -30,4 +30,4 @@ COPY .mvn ./.mvn
 #  CMD pgrep -f "java.*app.jar" || exit 1
 
 # Run the application
-ENTRYPOINT ["ls"]
+ENTRYPOINT ["ping google.com"]
