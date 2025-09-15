@@ -11,23 +11,23 @@ COPY mvnw .
 COPY .mvn ./.mvn
 
 # Build the application with shaded JAR
-#RUN mvn clean spotless:apply package -Dshade -DskipTests
+RUN ./mvnw clean spotless:apply package -Dshade -DskipTests
 
 # Create non-root user for security
-#RUN groupadd -r botuser && useradd -r -g botuser botuser
+RUN groupadd -r botuser && useradd -r -g botuser botuser
 
 # Copy the built JAR
-#RUN cp /app/target/lib-1.0-SNAPSHOT.jar app.jar
+RUN cp /app/target/lib-1.0-SNAPSHOT.jar app.jar
 
 # Change ownership to non-root user
-#RUN chown -R botuser:botuser /app
+RUN chown -R botuser:botuser /app
 
 # Switch to non-root user
-#USER botuser
+USER botuser
 
 # Health check command
-#HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
-#  CMD pgrep -f "java.*app.jar" || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
+  CMD pgrep -f "java.*app.jar" || exit 1
 
 # Run the application
-ENTRYPOINT ["ps"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
