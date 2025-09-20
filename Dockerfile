@@ -1,5 +1,5 @@
 # Use Eclipse Temurin JDK 21 as base image
-FROM maven:3.9-eclipse-temurin-17
+FROM arm32v7/maven:latest
 
 # Set working directory
 WORKDIR /app
@@ -11,7 +11,7 @@ COPY mvnw .
 COPY .mvn ./.mvn
 
 # Build the application with shaded JAR
-RUN ./mvnw clean spotless:apply package -Dshade -DskipTests
+RUN ./mvnw clean package -Dshade -DskipTests
 
 # Create non-root user for security
 RUN groupadd -r botuser && useradd -r -g botuser botuser
