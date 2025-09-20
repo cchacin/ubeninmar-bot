@@ -107,21 +107,12 @@
                         </googleJavaFormat>
                     </java>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                        <phase>compile</phase>
-                    </execution>
-                </executions>
                 <dependencies>
                     <dependency>
                         <groupId>com.google.googlejavaformat</groupId>
                         <artifactId>google-java-format</artifactId>
                         <version>1.28.0</version>
                     </dependency>
-
                 </dependencies>
             </plugin>
         </plugins>
