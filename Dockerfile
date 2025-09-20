@@ -7,11 +7,10 @@ WORKDIR /app
 # Copy Maven files
 COPY pom.xml .
 COPY src ./src
-COPY mvnw .
 COPY .mvn ./.mvn
 
 # Build the application with shaded JAR
-RUN ./mvnw clean package -Dshade -DskipTests
+RUN mvn clean package -Dshade -DskipTests
 
 # Create non-root user for security
 RUN groupadd -r botuser && useradd -r -g botuser botuser
