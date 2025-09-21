@@ -35,13 +35,13 @@ public class AffiliateService {
 
         try {
             // Remove existing tag parameter if present
-            String cleanUrl = removeExistingTag(amazonUrl);
+            var cleanUrl = removeExistingTag(amazonUrl);
 
             // Determine the separator (? or &) based on whether URL already has query parameters
-            String separator = cleanUrl.contains("?") ? "&" : "?";
+            var separator = cleanUrl.contains("?") ? "&" : "?";
 
             // Add the affiliate tag
-            String affiliateUrl =
+            var affiliateUrl =
                     cleanUrl
                             + separator
                             + "tag="

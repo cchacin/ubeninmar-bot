@@ -37,27 +37,26 @@ public class HttpRedirectFollower {
             return originalUrl;
         }
 
-        String currentUrl = originalUrl;
+        var currentUrl = originalUrl;
         int redirectCount = 0;
 
         try {
             while (redirectCount < MAX_REDIRECTS) {
                 LOGGER.debug("Following redirect #{}: {}", redirectCount + 1, currentUrl);
 
-                HttpRequest request =
+                var request =
                         HttpRequest.newBuilder()
                                 .uri(URI.create(currentUrl))
                                 .timeout(TIMEOUT)
                                 .GET()
                                 .build();
 
-                HttpResponse<String> response =
-                        httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
                 int statusCode = response.statusCode();
 
                 // Check if it's a redirect
                 if (statusCode >= 300 && statusCode < 400) {
-                    String locationHeader = response.headers().firstValue("Location").orElse(null);
+                    var locationHeader = response.headers().firstValue("Location").orElse(null);
                     if (locationHeader == null) {
                         LOGGER.warn(
                                 "Redirect response without Location header for URL: {}",
@@ -67,7 +66,7 @@ public class HttpRedirectFollower {
 
                     // Handle relative URLs
                     if (locationHeader.startsWith("/")) {
-                        URI baseUri = URI.create(currentUrl);
+                        var baseUri = URI.create(currentUrl);
                         locationHeader =
                                 baseUri.getScheme() + "://" + baseUri.getHost() + locationHeader;
                     }

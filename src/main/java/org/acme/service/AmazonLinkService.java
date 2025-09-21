@@ -1,6 +1,5 @@
 package org.acme.service;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.acme.model.LinkType;
 import org.acme.model.ProcessedLink;
@@ -53,18 +52,19 @@ public class AmazonLinkService {
     private LinkType detectLinkType(String url) {
         if (AMAZON_SHORT_PATTERN.matcher(url).matches()) {
             return LinkType.AMAZON_SHORT;
-        } else if (AMAZON_PATTERN.matcher(url).matches()) {
-            return LinkType.AMAZON_STANDARD;
-        } else if (isAmazonDomain(url)) {
-            return LinkType.AMAZON_STANDARD; // Might be a different format
-        } else {
-            return LinkType.NON_AMAZON;
         }
+        if (AMAZON_PATTERN.matcher(url).matches()) {
+            return LinkType.AMAZON_STANDARD;
+        }
+        if (isAmazonDomain(url)) {
+            return LinkType.AMAZON_STANDARD; // Might be a different format
+        }
+        return LinkType.NON_AMAZON;
     }
 
     /** Processes standard Amazon URLs (amazon.com/dp/, amazon.co.uk/gp/product/, etc.) */
     private ProcessedLink processStandardAmazonUrl(String url) {
-        Matcher matcher = AMAZON_PATTERN.matcher(url);
+        var matcher = AMAZON_PATTERN.matcher(url);
 
         if (matcher.matches()) {
             String domain = matcher.group(1);
@@ -83,7 +83,7 @@ public class AmazonLinkService {
     private ProcessedLink processShortAmazonUrl(String url) {
         LOGGER.debug("Processing short Amazon URL, following redirects: {}", url);
 
-        String finalUrl = redirectFollower.followRedirects(url);
+        var finalUrl = redirectFollower.followRedirects(url);
 
         if (finalUrl.equals(url)) {
             LOGGER.warn("No redirect found for short URL: {}", url);
@@ -93,12 +93,12 @@ public class AmazonLinkService {
         LOGGER.debug("Short URL resolved to: {}", finalUrl);
 
         // Now process the final URL as a standard Amazon URL
-        Matcher matcher = AMAZON_PATTERN.matcher(finalUrl);
+        var matcher = AMAZON_PATTERN.matcher(finalUrl);
 
         if (matcher.matches()) {
-            String domain = matcher.group(1);
-            String asin = matcher.group(2);
-            String affiliateUrl = affiliateService.addAffiliateTag(finalUrl, asin);
+            var domain = matcher.group(1);
+            var asin = matcher.group(2);
+            var affiliateUrl = affiliateService.addAffiliateTag(finalUrl, asin);
 
             LOGGER.info("Processed short Amazon URL - ASIN: {}, Domain: {}", asin, domain);
             return ProcessedLink.success(

@@ -2,7 +2,7 @@ package org.acme.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
+import java.util.Objects;
 import java.util.regex.Pattern;
 import org.acme.model.LinkType;
 import org.acme.model.ProcessedLink;
@@ -37,8 +37,8 @@ public class LinkProcessor {
 
         LOGGER.debug("Processing message: {}", message);
 
-        List<String> urls = extractUrls(message);
-        List<ProcessedLink> processedLinks = new ArrayList<>();
+        var urls = extractUrls(message);
+        var processedLinks = new ArrayList<ProcessedLink>();
 
         for (String url : urls) {
             if (amazonLinkService.isAmazonUrl(url)) {
@@ -66,15 +66,14 @@ public class LinkProcessor {
 
         if (amazonLinkService.isAmazonUrl(url)) {
             return amazonLinkService.processAmazonUrl(url);
-        } else {
-            return ProcessedLink.failed(url, LinkType.NON_AMAZON);
         }
+        return ProcessedLink.failed(url, LinkType.NON_AMAZON);
     }
 
     /** Extracts all URLs from a text message. */
     private List<String> extractUrls(String text) {
-        List<String> urls = new ArrayList<>();
-        Matcher matcher = URL_PATTERN.matcher(text);
+        var urls = new ArrayList<String>();
+        var matcher = URL_PATTERN.matcher(text);
 
         while (matcher.find()) {
             urls.add(matcher.group());
@@ -102,7 +101,7 @@ public class LinkProcessor {
         return processedLinks.stream()
                 .filter(ProcessedLink::processed)
                 .map(this::formatResponse)
-                .filter(response -> response != null)
+                .filter(Objects::nonNull)
                 .toList();
     }
 }

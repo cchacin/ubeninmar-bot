@@ -1,7 +1,5 @@
 package org.acme;
 
-import java.util.List;
-import org.acme.model.ProcessedLink;
 import org.acme.service.LinkProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,19 +24,19 @@ public class UbeninmarBot implements LongPollingSingleThreadUpdateConsumer {
     @Override
     public void consume(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String messageText = update.getMessage().getText();
-            String chatId = update.getMessage().getChatId().toString();
+            var messageText = update.getMessage().getText();
+            var chatId = update.getMessage().getChatId().toString();
 
             LOGGER.info("Message received from chat {}: {}", chatId, messageText);
 
             // Process the message for Amazon links
-            List<ProcessedLink> processedLinks = linkProcessor.processMessage(messageText);
+            var processedLinks = linkProcessor.processMessage(messageText);
 
             if (!processedLinks.isEmpty()) {
                 // Send responses for each successfully processed link
-                List<String> responses = linkProcessor.formatResponses(processedLinks);
+                var responses = linkProcessor.formatResponses(processedLinks);
 
-                for (String response : responses) {
+                for (var response : responses) {
                     sendResponse(chatId, response);
                 }
 
@@ -50,7 +48,7 @@ public class UbeninmarBot implements LongPollingSingleThreadUpdateConsumer {
     }
 
     private void sendResponse(String chatId, String responseText) {
-        SendMessage sendMessage = SendMessage.builder().chatId(chatId).text(responseText).build();
+        var sendMessage = SendMessage.builder().chatId(chatId).text(responseText).build();
 
         try {
             client.execute(sendMessage);
