@@ -14,7 +14,7 @@ public class Main {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
-    void main() {
+    public static void main(String... args) {
         try {
             var botsApplication = new TelegramBotsLongPollingApplication();
             var botToken = System.getenv("BOT_TOKEN");
