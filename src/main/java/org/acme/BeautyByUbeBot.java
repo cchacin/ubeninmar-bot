@@ -1,6 +1,8 @@
 package org.acme;
 
-import org.acme.service.LinkProcessor;
+import java.util.List;
+import java.util.function.Function;
+import org.acme.model.ProcessedLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
@@ -9,7 +11,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-public record BeautyByUbeBot(TelegramClient client, LinkProcessor linkProcessor)
+public record BeautyByUbeBot(
+        TelegramClient client,
+        Function<String, List<ProcessedLink>> processMessage,
+        Function<List<ProcessedLink>, List<String>> formatResponses)
         implements LongPollingSingleThreadUpdateConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BeautyByUbeBot.class);
@@ -36,11 +41,11 @@ public record BeautyByUbeBot(TelegramClient client, LinkProcessor linkProcessor)
             }
 
             // Process the message for Amazon links
-            var processedLinks = linkProcessor.processMessage(messageText);
+            var processedLinks = processMessage.apply(messageText);
 
             if (!processedLinks.isEmpty()) {
                 // Send responses for each successfully processed link
-                var responses = linkProcessor.formatResponses(processedLinks);
+                var responses = formatResponses.apply(processedLinks);
 
                 for (var response : responses) {
                     sendResponse(chatId, response);

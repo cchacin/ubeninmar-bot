@@ -9,12 +9,8 @@ public record AffiliateService(String affiliateTag) {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AffiliateService.class);
 
-    public AffiliateService() {
-        this(System.getenv("AFFILIATE_TAG"));
-    }
-
-    public String addAffiliateTag(String amazonUrl, String asin) {
-        if (amazonUrl == null || amazonUrl.isEmpty() || asin == null || asin.isEmpty()) {
+    public String addAffiliateTag(String amazonUrl) {
+        if (amazonUrl == null || amazonUrl.isEmpty()) {
             LOGGER.warn("Cannot add affiliate tag to invalid URL or ASIN");
             return amazonUrl;
         }

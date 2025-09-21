@@ -1,27 +1,18 @@
 package org.acme.util;
 
-import java.io.IOException;
 import java.net.URI;
-import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public record HttpRedirectFollower(HttpClient httpClient) {
+public record HttpRedirectFollower(Function<HttpRequest, HttpResponse<String>> executeRequest) {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpRedirectFollower.class);
     private static final int MAX_REDIRECTS = 5;
     private static final Duration TIMEOUT = Duration.ofSeconds(10);
-
-    public HttpRedirectFollower() {
-        this(
-                HttpClient.newBuilder()
-                        .connectTimeout(TIMEOUT)
-                        .followRedirects(HttpClient.Redirect.NEVER)
-                        .build());
-    }
 
     public String followRedirects(String originalUrl) {
         if (originalUrl == null || originalUrl.isEmpty()) {
@@ -42,7 +33,7 @@ public record HttpRedirectFollower(HttpClient httpClient) {
                                 .GET()
                                 .build();
 
-                var response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+                var response = executeRequest.apply(request);
                 int statusCode = response.statusCode();
 
                 // Check if it's a redirect
@@ -80,11 +71,8 @@ public record HttpRedirectFollower(HttpClient httpClient) {
                         "Maximum redirects ({}) reached for URL: {}", MAX_REDIRECTS, originalUrl);
             }
 
-        } catch (IOException | InterruptedException e) {
+        } catch (Exception e) {
             LOGGER.error("Error following redirects for URL: {}", originalUrl, e);
-            if (e instanceof InterruptedException) {
-                Thread.currentThread().interrupt();
-            }
             return originalUrl; // Return original URL on error
         }
 

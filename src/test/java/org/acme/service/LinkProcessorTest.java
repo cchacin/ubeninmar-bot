@@ -2,6 +2,13 @@ package org.acme.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.Optional;
+import javax.net.ssl.SSLSession;
 import org.acme.model.LinkType;
 import org.acme.model.ProcessedLink;
 import org.acme.util.HttpRedirectFollower;
@@ -10,14 +17,60 @@ import org.junit.jupiter.api.Test;
 
 class LinkProcessorTest {
 
-    private LinkProcessor linkProcessor;
+    LinkProcessor linkProcessor;
+    HttpResponse<String> response =
+            new HttpResponse<String>() {
+                @Override
+                public int statusCode() {
+                    return 200;
+                }
+
+                @Override
+                public HttpRequest request() {
+                    return null;
+                }
+
+                @Override
+                public Optional<HttpResponse<String>> previousResponse() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public HttpHeaders headers() {
+                    return null;
+                }
+
+                @Override
+                public String body() {
+                    return "";
+                }
+
+                @Override
+                public Optional<SSLSession> sslSession() {
+                    return Optional.empty();
+                }
+
+                @Override
+                public URI uri() {
+                    return null;
+                }
+
+                @Override
+                public HttpClient.Version version() {
+                    return null;
+                }
+            };
 
     @BeforeEach
     void setUp() {
-        var redirectFollower = new HttpRedirectFollower();
+        var redirectFollower = new HttpRedirectFollower(httpRequest -> response);
         var affiliateService = new AffiliateService("myaffiliate-20");
-        var amazonLinkService = new AmazonLinkService(redirectFollower, affiliateService);
-        this.linkProcessor = new LinkProcessor(amazonLinkService);
+        var amazonLinkService =
+                new AmazonLinkService(
+                        redirectFollower::followRedirects, affiliateService::addAffiliateTag);
+        this.linkProcessor =
+                new LinkProcessor(
+                        amazonLinkService::isAmazonUrl, amazonLinkService::processAmazonUrl);
     }
 
     @Test

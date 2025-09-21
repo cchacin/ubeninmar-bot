@@ -3,13 +3,15 @@ package org.acme.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
-import org.acme.model.LinkType;
 import org.acme.model.ProcessedLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public record LinkProcessor(AmazonLinkService amazonLinkService) {
+public record LinkProcessor(
+        Predicate<String> isAmazonUrl, Function<String, ProcessedLink> processAmazonUrl) {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinkProcessor.class);
 
@@ -17,12 +19,6 @@ public record LinkProcessor(AmazonLinkService amazonLinkService) {
     private static final String URL_REGEX = "https?://[\\w\\-._~:/?#\\[\\]@!$&'()*+,;=%]+";
     private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
 
-    /**
-     * Processes a text message to find and process Amazon links.
-     *
-     * @param message The message text to process
-     * @return List of processed links found in the message
-     */
     public List<ProcessedLink> processMessage(String message) {
         if (message == null || message.trim().isEmpty()) {
             LOGGER.debug("Empty or null message received");
@@ -35,8 +31,8 @@ public record LinkProcessor(AmazonLinkService amazonLinkService) {
         var processedLinks = new ArrayList<ProcessedLink>();
 
         for (String url : urls) {
-            if (amazonLinkService.isAmazonUrl(url)) {
-                ProcessedLink processed = amazonLinkService.processAmazonUrl(url);
+            if (isAmazonUrl.test(url)) {
+                ProcessedLink processed = processAmazonUrl.apply(url);
                 processedLinks.add(processed);
                 LOGGER.info("Processed Amazon link: {} -> Success: {}", url, processed.processed());
             } else {
@@ -45,17 +41,6 @@ public record LinkProcessor(AmazonLinkService amazonLinkService) {
         }
 
         return processedLinks;
-    }
-
-    public ProcessedLink processUrl(String url) {
-        if (url == null || url.trim().isEmpty()) {
-            return ProcessedLink.failed(url, LinkType.UNKNOWN);
-        }
-
-        if (amazonLinkService.isAmazonUrl(url)) {
-            return amazonLinkService.processAmazonUrl(url);
-        }
-        return ProcessedLink.failed(url, LinkType.NON_AMAZON);
     }
 
     /** Extracts all URLs from a text message. */
@@ -75,7 +60,7 @@ public record LinkProcessor(AmazonLinkService amazonLinkService) {
      * Formats a successful processed link for bot response. Uses the clean & simple format: just
      * the affiliate URL.
      */
-    public String formatResponse(ProcessedLink processedLink) {
+    String formatResponse(ProcessedLink processedLink) {
         if (!processedLink.processed() || processedLink.affiliateUrl() == null) {
             return null; // No response for failed processing
         }
