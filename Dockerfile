@@ -7,11 +7,9 @@ WORKDIR /app
 # Copy Maven files
 COPY pom.xml .
 COPY src ./src
-COPY .mvn ./.mvn
-COPY mvnw ./mvnw
 
 # Build the application with shaded JAR
-RUN ./mvnw clean package -Dshade -DskipTests
+RUN mvn clean package -Dshade -DskipTests
 
 # Health check command
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
