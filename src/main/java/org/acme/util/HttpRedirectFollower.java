@@ -9,29 +9,20 @@ import java.time.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class HttpRedirectFollower {
+public record HttpRedirectFollower(HttpClient httpClient) {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HttpRedirectFollower.class);
     private static final int MAX_REDIRECTS = 5;
     private static final Duration TIMEOUT = Duration.ofSeconds(10);
 
-    private final HttpClient httpClient;
-
     public HttpRedirectFollower() {
-        this.httpClient =
+        this(
                 HttpClient.newBuilder()
                         .connectTimeout(TIMEOUT)
                         .followRedirects(HttpClient.Redirect.NEVER)
-                        .build();
+                        .build());
     }
 
-    /**
-     * Follows redirects manually to get the final destination URL. This is needed for a.co links
-     * which redirect to the actual Amazon product page.
-     *
-     * @param originalUrl The original URL to follow
-     * @return The final destination URL after following redirects, or original URL if no redirects
-     */
     public String followRedirects(String originalUrl) {
         if (originalUrl == null || originalUrl.isEmpty()) {
             return originalUrl;

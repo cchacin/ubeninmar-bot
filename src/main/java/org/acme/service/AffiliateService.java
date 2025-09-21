@@ -5,28 +5,14 @@ import java.nio.charset.StandardCharsets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AffiliateService {
+public record AffiliateService(String affiliateTag) {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AffiliateService.class);
-
-    private final String affiliateTag;
 
     public AffiliateService() {
         this(System.getenv("AFFILIATE_TAG"));
     }
 
-    public AffiliateService(String affiliateTag) {
-        this.affiliateTag = affiliateTag;
-    }
-
-    /**
-     * Adds affiliate tag to an Amazon URL. Handles both URLs with existing query parameters and
-     * those without.
-     *
-     * @param amazonUrl The Amazon URL to add affiliate tag to
-     * @param asin The product ASIN
-     * @return The URL with affiliate tag added
-     */
     public String addAffiliateTag(String amazonUrl, String asin) {
         if (amazonUrl == null || amazonUrl.isEmpty() || asin == null || asin.isEmpty()) {
             LOGGER.warn("Cannot add affiliate tag to invalid URL or ASIN");
@@ -59,7 +45,7 @@ public class AffiliateService {
     /** Removes existing tag parameter from URL to avoid conflicts. */
     private String removeExistingTag(String url) {
         if (url == null) {
-            return url;
+            return null;
         }
 
         // Remove tag=value parameter (handles various formats)

@@ -8,23 +8,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.longpolling.TelegramBotsLongPollingApplication;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class Main {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Main.class);
 
     public static void main(String... args) {
-        try {
-            var botsApplication = new TelegramBotsLongPollingApplication();
+        try (var botsApplication = new TelegramBotsLongPollingApplication()) {
             var botToken = System.getenv("BOT_TOKEN");
             var client = new OkHttpTelegramClient(botToken);
             var linkProcessor =
                     new LinkProcessor(
                             new AmazonLinkService(
                                     new HttpRedirectFollower(), new AffiliateService()));
-            botsApplication.registerBot(botToken, new UbeninmarBot(client, linkProcessor));
-        } catch (TelegramApiException e) {
+            botsApplication.registerBot(botToken, new BeautyByUbeBot(client, linkProcessor));
+            Thread.currentThread().join();
+        } catch (Exception e) {
             LOGGER.error("Error instantiating bot", e);
         }
     }

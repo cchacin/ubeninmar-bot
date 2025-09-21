@@ -9,17 +9,10 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-public class UbeninmarBot implements LongPollingSingleThreadUpdateConsumer {
+public record BeautyByUbeBot(TelegramClient client, LinkProcessor linkProcessor)
+        implements LongPollingSingleThreadUpdateConsumer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(UbeninmarBot.class);
-
-    private final TelegramClient client;
-    private final LinkProcessor linkProcessor;
-
-    public UbeninmarBot(TelegramClient client, LinkProcessor linkProcessor) {
-        this.client = client;
-        this.linkProcessor = linkProcessor;
-    }
+    private static final Logger LOGGER = LoggerFactory.getLogger(BeautyByUbeBot.class);
 
     @Override
     public void consume(Update update) {
@@ -30,7 +23,7 @@ public class UbeninmarBot implements LongPollingSingleThreadUpdateConsumer {
 
             LOGGER.info("Message received from chat {}: {}", chatId, messageText);
 
-            if (messageText.contains("/start")) {
+            if ("/start".equals(messageText)) {
                 sendResponse(
                         chatId,
                         """

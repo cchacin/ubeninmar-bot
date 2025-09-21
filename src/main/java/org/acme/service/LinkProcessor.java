@@ -9,19 +9,13 @@ import org.acme.model.ProcessedLink;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class LinkProcessor {
+public record LinkProcessor(AmazonLinkService amazonLinkService) {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LinkProcessor.class);
 
     // Pattern to extract URLs from text messages
     private static final String URL_REGEX = "https?://[\\w\\-._~:/?#\\[\\]@!$&'()*+,;=%]+";
     private static final Pattern URL_PATTERN = Pattern.compile(URL_REGEX);
-
-    private final AmazonLinkService amazonLinkService;
-
-    public LinkProcessor(AmazonLinkService amazonLinkService) {
-        this.amazonLinkService = amazonLinkService;
-    }
 
     /**
      * Processes a text message to find and process Amazon links.
@@ -53,12 +47,6 @@ public class LinkProcessor {
         return processedLinks;
     }
 
-    /**
-     * Processes a single URL directly.
-     *
-     * @param url The URL to process
-     * @return ProcessedLink result
-     */
     public ProcessedLink processUrl(String url) {
         if (url == null || url.trim().isEmpty()) {
             return ProcessedLink.failed(url, LinkType.UNKNOWN);

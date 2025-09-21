@@ -7,7 +7,8 @@ import org.acme.util.HttpRedirectFollower;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AmazonLinkService {
+public record AmazonLinkService(
+        HttpRedirectFollower redirectFollower, AffiliateService affiliateService) {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AmazonLinkService.class);
 
@@ -22,15 +23,6 @@ public class AmazonLinkService {
             Pattern.compile(AMAZON_REGEX, Pattern.CASE_INSENSITIVE);
     private static final Pattern AMAZON_SHORT_PATTERN =
             Pattern.compile(AMAZON_SHORT_REGEX, Pattern.CASE_INSENSITIVE);
-
-    private final HttpRedirectFollower redirectFollower;
-    private final AffiliateService affiliateService;
-
-    public AmazonLinkService(
-            HttpRedirectFollower redirectFollower, AffiliateService affiliateService) {
-        this.redirectFollower = redirectFollower;
-        this.affiliateService = affiliateService;
-    }
 
     public ProcessedLink processAmazonUrl(String url) {
         if (url == null || url.isEmpty()) {
@@ -67,9 +59,9 @@ public class AmazonLinkService {
         var matcher = AMAZON_PATTERN.matcher(url);
 
         if (matcher.matches()) {
-            String domain = matcher.group(1);
-            String asin = matcher.group(2);
-            String affiliateUrl = affiliateService.addAffiliateTag(url, asin);
+            var domain = matcher.group(1);
+            var asin = matcher.group(2);
+            var affiliateUrl = affiliateService.addAffiliateTag(url, asin);
 
             LOGGER.info("Processed standard Amazon URL - ASIN: {}, Domain: {}", asin, domain);
             return ProcessedLink.success(
