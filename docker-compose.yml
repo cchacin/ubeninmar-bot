@@ -9,3 +9,4 @@ services:
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ${HOME}/.m2:/root/.m2
