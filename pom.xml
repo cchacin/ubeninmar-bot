@@ -11,12 +11,15 @@
 
     <properties>
         <maven.compiler.release>21</maven.compiler.release>
-        <junit.version>5.11.4</junit.version>
+        <junit.version>5.13.4</junit.version>
         <awaitility.version>4.3.0</awaitility.version>
-        <assertj.version>3.27.0</assertj.version>
+        <assertj.version>3.27.5</assertj.version>
         <jqwik.version>1.9.3</jqwik.version>
         <record.builder.version>41</record.builder.version>
+        <telegrambots.version>9.1.0</telegrambots.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <slf4j.version>2.0.17</slf4j.version>
+        <logback.version>1.5.18</logback.version>
         <tagNameFormat>v@{project.version}</tagNameFormat>
         <preparationGoals>clean compile test-compile</preparationGoals>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,22 +29,22 @@
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-longpolling</artifactId>
-            <version>9.1.0</version>
+            <version>${telegrambots.version}</version>
         </dependency>
         <dependency>
             <groupId>org.telegram</groupId>
             <artifactId>telegrambots-client</artifactId>
-            <version>9.1.0</version>
+            <version>${telegrambots.version}</version>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>2.0.16</version>
+            <version>${slf4j.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.5.18</version>
+            <version>${logback.version}</version>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>

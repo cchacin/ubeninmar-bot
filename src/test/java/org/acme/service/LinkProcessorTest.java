@@ -31,7 +31,7 @@ class LinkProcessorTest {
 
         // Then
         assertThat(results).hasSize(1);
-        ProcessedLink result = results.get(0);
+        ProcessedLink result = results.getFirst();
         assertThat(result.processed()).isTrue();
         assertThat(result.asin()).isEqualTo("B07XYZ1234");
         assertThat(result.type()).isEqualTo(LinkType.AMAZON_STANDARD);
@@ -81,7 +81,7 @@ class LinkProcessorTest {
 
         // Then
         assertThat(results).hasSize(2);
-        assertThat(results.get(0).asin()).isEqualTo("B07ABC1234");
+        assertThat(results.getFirst().asin()).isEqualTo("B07ABC1234");
         assertThat(results.get(1).asin()).isEqualTo("B07DEF5678");
     }
 }
