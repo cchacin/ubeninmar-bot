@@ -1,6 +1,7 @@
 services:
   ubeninmar-bot:
     build: .
+    platform: linux/amd64/v2
     container_name: ubeninmar-telegram-bot
     image: cchacin/ubeninmar-telegram-bot:latest
     environment:
