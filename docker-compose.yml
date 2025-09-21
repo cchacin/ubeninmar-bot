@@ -2,6 +2,7 @@ services:
   ubeninmar-bot:
     build: .
     container_name: ubeninmar-telegram-bot
+    image: cchacin/ubeninmar-telegram-bot:latest
     environment:
       # Telegram Bot Token - Set this in your .env file or export before running
       - BOT_TOKEN=${BOT_TOKEN}
