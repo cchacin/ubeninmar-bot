@@ -23,11 +23,24 @@ public class UbeninmarBot implements LongPollingSingleThreadUpdateConsumer {
 
     @Override
     public void consume(Update update) {
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            var messageText = update.getMessage().getText();
-            var chatId = update.getMessage().getChatId().toString();
+        var message = update.getMessage();
+        if (update.hasMessage() && message.hasText()) {
+            var messageText = message.getText();
+            var chatId = message.getChatId().toString();
 
             LOGGER.info("Message received from chat {}: {}", chatId, messageText);
+
+            if (messageText.contains("/start")) {
+                sendResponse(
+                        chatId,
+                        """
+                        👋🏼️ Hello %s 👋🏼️
+                        Send me your amazon links
+                        🙏🏼️ thanks for the support 🙏🏼️
+                        """
+                                .formatted(message.getChat().getFirstName()));
+                return;
+            }
 
             // Process the message for Amazon links
             var processedLinks = linkProcessor.processMessage(messageText);
